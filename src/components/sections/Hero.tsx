@@ -5,6 +5,7 @@ import { useAdmin } from "@/context/AdminContext";
 import { useState, useEffect } from "react";
 import HomeEditModal from "@/components/admin/HomeEditModal";
 import { toast } from "sonner";
+import { getApiUrl, getAssetUrl } from "@/config/api";
 
 const Hero = () => {
   const { isAdmin } = useAdmin();
@@ -24,18 +25,14 @@ const Hero = () => {
 
   const fetchHomeData = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/home');
+      const response = await fetch(getApiUrl('/api/home'));
       if (response.ok) {
         const payload = await response.json().catch(() => null);
         const home = payload?.home || payload;
         const resumeUrl = home?.resumeUrl || null;
         const photoUrl = home?.photoUrl || null;
-        const resolvedResumeUrl = resumeUrl
-          ? (resumeUrl.startsWith('http') ? resumeUrl : `http://localhost:5000${resumeUrl}`)
-          : null;
-        const resolvedPhotoUrl = photoUrl
-          ? (photoUrl.startsWith('http') ? photoUrl : `http://localhost:5000${photoUrl}`)
-          : null;
+        const resolvedResumeUrl = resumeUrl ? getAssetUrl(resumeUrl) : null;
+        const resolvedPhotoUrl = photoUrl ? getAssetUrl(photoUrl) : null;
         setHomeData({
           name: home?.name || "Your Name",
           tagline: home?.tagline || "Full Stack Developer specializing in building exceptional digital experiences. I create elegant, performant, and accessible web applications.",
@@ -53,7 +50,7 @@ const Hero = () => {
 
   const handleSave = async (data: { name: string; tagline: string; availableForOpportunities: boolean }) => {
     const token = localStorage.getItem('adminToken');
-    const response = await fetch('http://localhost:5000/api/home', {
+    const response = await fetch(getApiUrl('/api/home'), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -70,9 +67,7 @@ const Hero = () => {
 
     const updatedHome = payload?.home || payload;
     const photoUrl = updatedHome?.photoUrl || homeData.photoUrl;
-    const resolvedPhotoUrl = photoUrl
-      ? (photoUrl.startsWith('http') ? photoUrl : `http://localhost:5000${photoUrl}`)
-      : null;
+    const resolvedPhotoUrl = photoUrl ? getAssetUrl(photoUrl) : null;
     setHomeData({
       name: updatedHome?.name ?? homeData.name,
       tagline: updatedHome?.tagline ?? homeData.tagline,
@@ -86,7 +81,7 @@ const Hero = () => {
     const token = localStorage.getItem('adminToken');
     const formData = new FormData();
     formData.append('resume', file);
-    const response = await fetch('http://localhost:5000/api/home/resume', {
+    const response = await fetch(getApiUrl('/api/home/resume'), {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -107,9 +102,7 @@ const Hero = () => {
     }
 
     // Use full backend URL so the link works from the Vite dev server
-    const resolvedUrl = resumeUrl.startsWith('http')
-      ? resumeUrl
-      : `http://localhost:5000${resumeUrl}`;
+    const resolvedUrl = getAssetUrl(resumeUrl);
 
     // Update state immediately with the new resume URL
     setHomeData(prev => ({ ...prev, resumeUrl: resolvedUrl }));
@@ -119,7 +112,7 @@ const Hero = () => {
     const token = localStorage.getItem('adminToken');
     const formData = new FormData();
     formData.append('photo', file);
-    const response = await fetch('http://localhost:5000/api/home/photo', {
+    const response = await fetch(getApiUrl('/api/home/photo'), {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -134,16 +127,14 @@ const Hero = () => {
     }
 
     const photoUrl = payload?.photoUrl || homeData.photoUrl;
-    const resolvedUrl = photoUrl?.startsWith('http')
-      ? photoUrl
-      : `http://localhost:5000${photoUrl}`;
+    const resolvedUrl = getAssetUrl(photoUrl);
 
     setHomeData({ ...homeData, photoUrl: resolvedUrl });
   };
 
   const handlePhotoDelete = async () => {
     const token = localStorage.getItem('adminToken');
-    const response = await fetch('http://localhost:5000/api/home/photo', {
+    const response = await fetch(getApiUrl('/api/home/photo'), {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -161,7 +152,7 @@ const Hero = () => {
 
   const handleResumeDelete = async () => {
     const token = localStorage.getItem('adminToken');
-    const response = await fetch('http://localhost:5000/api/home/resume', {
+    const response = await fetch(getApiUrl('/api/home/resume'), {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`

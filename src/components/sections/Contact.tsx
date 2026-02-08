@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/context/AdminContext";
 import { toast } from "sonner";
+import { getApiUrl } from "@/config/api";
 
 const Contact = () => {
   const ref = useRef(null);
@@ -35,8 +36,8 @@ const Contact = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:5000/api/contact');
-      
+      const response = await fetch(getApiUrl('/api/contact'));
+
       if (!response.ok) {
         throw new Error(`Failed to fetch contact data: ${response.status}`);
       }
@@ -64,7 +65,7 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/contact/send', {
+      const response = await fetch(getApiUrl('/api/contact/send'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +74,7 @@ const Contact = () => {
       });
 
       const data = await response.json().catch(() => null);
-      
+
       if (!response.ok || (data && data.success === false)) {
         const message = data?.error || data?.message || 'Failed to send message';
         throw new Error(message);
@@ -105,7 +106,7 @@ const Contact = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const response = await fetch(getApiUrl('/api/contact'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -331,35 +332,35 @@ const Contact = () => {
                 </div>
               </div>
             ) : (
-            <div className="space-y-6">
-              {contactInfo.map((info) => (
-                <div key={info.label} className="flex items-center gap-4">
-                  <div className="p-3 rounded-lg bg-accent/10">
-                    <info.icon className="h-5 w-5 text-accent" />
+              <div className="space-y-6">
+                {contactInfo.map((info) => (
+                  <div key={info.label} className="flex items-center gap-4">
+                    <div className="p-3 rounded-lg bg-accent/10">
+                      <info.icon className="h-5 w-5 text-accent" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">{info.label}</p>
+                      {info.href ? (
+                        <a
+                          href={info.href}
+                          className="text-foreground hover:text-accent transition-colors font-medium"
+                        >
+                          {info.value}
+                        </a>
+                      ) : (
+                        <p className="text-foreground font-medium">{info.value}</p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{info.label}</p>
-                    {info.href ? (
-                      <a
-                        href={info.href}
-                        className="text-foreground hover:text-accent transition-colors font-medium"
-                      >
-                        {info.value}
-                      </a>
-                    ) : (
-                      <p className="text-foreground font-medium">{info.value}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
+                ))}
 
                 {/* Social Links - Only show if at least one social link exists */}
                 {contactData.socialLinks && (
-                  (contactData.socialLinks.github || 
-                   contactData.socialLinks.linkedin || 
-                   contactData.socialLinks.twitter || 
-                   contactData.socialLinks.email ||
-                   contactData.socialLinks.website) && (
+                  (contactData.socialLinks.github ||
+                    contactData.socialLinks.linkedin ||
+                    contactData.socialLinks.twitter ||
+                    contactData.socialLinks.email ||
+                    contactData.socialLinks.website) && (
                     <div className="flex items-center gap-4 pt-4">
                       <div className="p-3 rounded-lg bg-accent/10">
                         <Globe className="h-5 w-5 text-accent" />
@@ -422,7 +423,7 @@ const Contact = () => {
                     </div>
                   )
                 )}
-            </div>
+              </div>
             )}
           </motion.div>
 

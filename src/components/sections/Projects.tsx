@@ -16,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { getApiUrl, getAssetUrl } from "@/config/api";
 
 const Projects = () => {
   const ref = useRef(null);
@@ -36,7 +37,7 @@ const Projects = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:5000/api/projects');
+      const response = await fetch(getApiUrl('/api/projects'));
 
       if (!response.ok) {
         let errorMessage = `Failed to fetch projects: ${response.status} ${response.statusText}`;
@@ -60,13 +61,13 @@ const Projects = () => {
     } catch (error: any) {
       console.error('Error fetching projects:', error);
       let errorMessage = 'Failed to load projects.';
-      
+
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
         errorMessage = 'Cannot connect to backend server. Make sure the server is running on port 5000.';
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
+
       setError(errorMessage);
       setProjects([]);
     } finally {
@@ -98,7 +99,7 @@ const Projects = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/projects/${deleteProjectId}`, {
+      const response = await fetch(getApiUrl(`/api/projects/${deleteProjectId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -140,11 +141,11 @@ const Projects = () => {
     return (
       <section className="py-20 md:py-32 bg-secondary/30 text-center text-destructive" id="projects">
         <div className="section-container">
-        <p className="text-xl font-semibold mb-2">Error Loading Projects</p>
+          <p className="text-xl font-semibold mb-2">Error Loading Projects</p>
           <p className="mb-4 text-sm max-w-2xl mx-auto">{error}</p>
-        <Button variant="outline" onClick={fetchProjects}>
-          Retry
-        </Button>
+          <Button variant="outline" onClick={fetchProjects}>
+            Retry
+          </Button>
         </div>
       </section>
     );
@@ -154,7 +155,7 @@ const Projects = () => {
     return (
       <section className="py-20 md:py-32 bg-secondary/30 text-center" id="projects">
         <div className="section-container">
-        <p className="text-xl text-muted-foreground">No projects found.</p>
+          <p className="text-xl text-muted-foreground">No projects found.</p>
           {isAdmin && (
             <div className="mt-4">
               <Button onClick={handleAddClick}>
@@ -214,13 +215,13 @@ const Projects = () => {
             >
               {isAdmin && (
                 <div className="absolute top-2 right-2 z-10 flex gap-1 bg-background/90 backdrop-blur-sm rounded-md p-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     className="h-7 w-7"
-                  onClick={() => handleEditClick(project)}
+                    onClick={() => handleEditClick(project)}
                     title="Edit project"
-                >
+                  >
                     <Edit className="h-3.5 w-3.5" />
                   </Button>
                   <Button
@@ -231,15 +232,15 @@ const Projects = () => {
                     title="Delete project"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
-                </Button>
+                  </Button>
                 </div>
               )}
 
               {/* Project Image */}
               <div className="h-48 bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center overflow-hidden">
                 {project.imageUrl ? (
-                  <img 
-                    src={`http://localhost:5000${project.imageUrl}`} 
+                  <img
+                    src={getAssetUrl(project.imageUrl)}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -250,63 +251,63 @@ const Projects = () => {
                     </svg>
                   </div>
                 )}
-                  </div>
+              </div>
 
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-accent transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-muted-foreground mb-4 line-clamp-3">
-                      {project.description}
-                    </p>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-accent transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-muted-foreground mb-4 line-clamp-3">
+                  {project.description}
+                </p>
 
-                    {/* Technologies */}
-                    <div className="flex flex-wrap gap-2 mb-6">
+                {/* Technologies */}
+                <div className="flex flex-wrap gap-2 mb-6">
                   {project.technologies && project.technologies.slice(0, 4).map((tech: string) => (
-                        <span
-                          key={tech}
-                          className="px-3 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground"
-                        >
-                          {tech}
-                        </span>
-                      ))}
+                    <span
+                      key={tech}
+                      className="px-3 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground"
+                    >
+                      {tech}
+                    </span>
+                  ))}
                   {project.technologies && project.technologies.length > 4 && (
                     <span className="px-3 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground">
                       +{project.technologies.length - 4}
                     </span>
                   )}
-                    </div>
+                </div>
 
-                    {/* Links */}
-                    <div className="flex items-center gap-3">
-                      {project.liveUrl && (
-                        <Button variant="outline" size="sm" asChild>
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`View ${project.title} live demo`}
-                          >
+                {/* Links */}
+                <div className="flex items-center gap-3">
+                  {project.liveUrl && (
+                    <Button variant="outline" size="sm" asChild>
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`View ${project.title} live demo`}
+                      >
                         <ExternalLink className="h-4 w-4 mr-1" />
                         Live
-                          </a>
-                        </Button>
-                      )}
-                      {project.githubUrl && (
-                        <Button variant="ghost" size="sm" asChild>
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`View ${project.title} source code on GitHub`}
-                          >
+                      </a>
+                    </Button>
+                  )}
+                  {project.githubUrl && (
+                    <Button variant="ghost" size="sm" asChild>
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`View ${project.title} source code on GitHub`}
+                      >
                         <Github className="h-4 w-4 mr-1" />
-                            Code
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                  </div>
+                        Code
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
             </motion.article>
           ))}
         </div>

@@ -7,6 +7,7 @@ import { useAdmin } from "@/context/AdminContext";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { getApiUrl } from "@/config/api";
 
 // Icon mapping
 const iconMap: { [key: string]: any } = {
@@ -42,8 +43,8 @@ const Skills = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:5000/api/skills');
-      
+      const response = await fetch(getApiUrl('/api/skills'));
+
       if (!response.ok) {
         throw new Error(`Failed to fetch skills: ${response.status}`);
       }
@@ -92,12 +93,12 @@ const Skills = () => {
         // Update existing
         const updateData = {
           ...editForm,
-          skills: typeof editForm.skills === 'string' 
+          skills: typeof editForm.skills === 'string'
             ? editForm.skills.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
             : editForm.skills,
         };
 
-        const response = await fetch(`http://localhost:5000/api/skills/${editingId}`, {
+        const response = await fetch(getApiUrl(`/api/skills/${editingId}`), {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ const Skills = () => {
           order: skillCategories.length,
         };
 
-        const response = await fetch('http://localhost:5000/api/skills', {
+        const response = await fetch(getApiUrl('/api/skills'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -156,7 +157,7 @@ const Skills = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/skills/${categoryId}`, {
+      const response = await fetch(getApiUrl(`/api/skills/${categoryId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -285,7 +286,7 @@ const Skills = () => {
 
           {skillCategories.map((category, categoryIndex) => {
             const IconComponent = iconMap[category.icon] || Code;
-            
+
             return (
               <motion.article
                 key={category.id}
@@ -360,20 +361,20 @@ const Skills = () => {
                       <h3 className="text-lg font-semibold text-foreground">{category.title}</h3>
                     </div>
 
-              <ul className="space-y-2" aria-label={`${category.title} skills`}>
+                    <ul className="space-y-2" aria-label={`${category.title} skills`}>
                       {category.skills && category.skills.map((skill: string, skillIndex: number) => (
-                  <li
+                        <li
                           key={skillIndex}
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
-                    <span className="text-sm">{skill}</span>
-                  </li>
-                ))}
-              </ul>
+                          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
+                          <span className="text-sm">{skill}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </>
                 )}
-            </motion.article>
+              </motion.article>
             );
           })}
         </div>

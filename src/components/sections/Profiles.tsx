@@ -16,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { getApiUrl } from "@/config/api";
 
 const Profiles = () => {
   const ref = useRef(null);
@@ -36,7 +37,7 @@ const Profiles = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:5000/api/profiles');
+      const response = await fetch(getApiUrl('/api/profiles'));
 
       if (!response.ok) {
         let errorMessage = `Failed to fetch profiles: ${response.status} ${response.statusText}`;
@@ -61,13 +62,13 @@ const Profiles = () => {
     } catch (error: any) {
       console.error('Error fetching profiles:', error);
       let errorMessage = 'Failed to load profiles.';
-      
+
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
         errorMessage = 'Cannot connect to backend server. Make sure the server is running on port 5000.';
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
+
       setError(errorMessage);
       setProfiles([]);
     } finally {
@@ -103,7 +104,7 @@ const Profiles = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/profiles/${deleteProfileId}`, {
+      const response = await fetch(getApiUrl(`/api/profiles/${deleteProfileId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -204,7 +205,7 @@ const Profiles = () => {
             )}
           </div>
         ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {profiles.map((profile: any, index: number) => (
               <motion.div
                 key={profile.id || profile.name}
@@ -214,13 +215,13 @@ const Profiles = () => {
                 className="group relative"
               >
                 <a
-              href={profile.url}
-              target="_blank"
-              rel="noopener noreferrer"
+                  href={profile.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="block"
-              aria-label={`Visit my ${profile.name} profile`}
-            >
-              <article className="bg-card rounded-xl p-6 shadow-[var(--card-shadow)] border border-border card-hover h-full">
+                  aria-label={`Visit my ${profile.name} profile`}
+                >
+                  <article className="bg-card rounded-xl p-6 shadow-[var(--card-shadow)] border border-border card-hover h-full">
                     {isAdmin && (
                       <div className="absolute top-2 right-2 z-10 flex gap-1 bg-background/90 backdrop-blur-sm rounded-md p-1">
                         <Button
@@ -244,41 +245,41 @@ const Profiles = () => {
                       </div>
                     )}
 
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-lg ${profile.color || 'bg-foreground'} flex items-center justify-center`}>
-                      <span className="text-white font-bold text-sm">
-                        {profile.name.charAt(0)}
-                      </span>
+                          <span className="text-white font-bold text-sm">
+                            {profile.name.charAt(0)}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
+                            {profile.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground font-mono">
+                            {profile.username}
+                          </p>
+                        </div>
+                      </div>
+                      <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-accent transition-colors" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
-                        {profile.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-mono">
-                        {profile.username}
-                      </p>
-                    </div>
-                  </div>
-                  <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-accent transition-colors" />
-                </div>
 
                     {profile.description && (
-                <p className="text-muted-foreground text-sm mb-4">
-                  {profile.description}
-                </p>
+                      <p className="text-muted-foreground text-sm mb-4">
+                        {profile.description}
+                      </p>
                     )}
 
                     {profile.stats && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-medium">
-                  {profile.stats}
-                </span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-medium">
+                        {profile.stats}
+                      </span>
                     )}
-              </article>
+                  </article>
                 </a>
               </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
         )}
       </div>
 

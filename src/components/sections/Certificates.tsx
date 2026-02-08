@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getApiUrl, getAssetUrl } from "@/config/api";
 
 const Certificates = () => {
   const ref = useRef(null);
@@ -47,7 +48,7 @@ const Certificates = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:5000/api/certificates');
+      const response = await fetch(getApiUrl('/api/certificates'));
 
       if (!response.ok) {
         throw new Error(`Failed to fetch certificates: ${response.status}`);
@@ -88,7 +89,7 @@ const Certificates = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/certificates/${deleteCertificateId}`, {
+      const response = await fetch(getApiUrl(`/api/certificates/${deleteCertificateId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -117,8 +118,8 @@ const Certificates = () => {
       }
 
       const url = editingCertificate
-        ? `http://localhost:5000/api/certificates/${editingCertificate._id}`
-        : 'http://localhost:5000/api/certificates';
+        ? getApiUrl(`/api/certificates/${editingCertificate._id}`)
+        : getApiUrl('/api/certificates');
 
       const response = await fetch(url, {
         method: editingCertificate ? 'PUT' : 'POST',
@@ -144,9 +145,7 @@ const Certificates = () => {
   };
 
   const handleCertificateClick = (certificate: any) => {
-    const fileUrl = certificate.fileUrl.startsWith('http')
-      ? certificate.fileUrl
-      : `http://localhost:5000${certificate.fileUrl}`;
+    const fileUrl = getAssetUrl(certificate.fileUrl);
 
     if (certificate.fileType === 'pdf') {
       window.open(fileUrl, '_blank');
@@ -223,9 +222,7 @@ const Certificates = () => {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {certificates.map((certificate) => {
-              const fileUrl = certificate.fileUrl.startsWith('http')
-                ? certificate.fileUrl
-                : `http://localhost:5000${certificate.fileUrl}`;
+              const fileUrl = getAssetUrl(certificate.fileUrl);
 
               return (
                 <CertificateCard
@@ -317,9 +314,7 @@ const CertificateModal = ({ open, onClose, certificate, onSave }: CertificateMod
     if (certificate) {
       setTitle(certificate.title || '');
       setIssuer(certificate.issuer || '');
-      const fileUrl = certificate.fileUrl?.startsWith('http')
-        ? certificate.fileUrl
-        : `http://localhost:5000${certificate.fileUrl}`;
+      const fileUrl = getAssetUrl(certificate.fileUrl);
       setFilePreview(fileUrl);
     } else {
       setTitle('');

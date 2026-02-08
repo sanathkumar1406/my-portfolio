@@ -7,6 +7,7 @@ import { useAdmin } from "@/context/AdminContext";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { getApiUrl } from "@/config/api";
 
 const About = () => {
   const ref = useRef(null);
@@ -30,8 +31,8 @@ const About = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:5000/api/about');
-      
+      const response = await fetch(getApiUrl('/api/about'));
+
       if (!response.ok) {
         throw new Error(`Failed to fetch about data: ${response.status}`);
       }
@@ -55,7 +56,7 @@ const About = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/about', {
+      const response = await fetch(getApiUrl('/api/about'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +89,7 @@ const About = () => {
       }
 
       let education = [...(aboutData.education || [])];
-      
+
       if (editingEduId !== null) {
         // Update existing
         education[editingEduId] = editEduForm;
@@ -97,7 +98,7 @@ const About = () => {
         education.push(newEdu);
       }
 
-      const response = await fetch('http://localhost:5000/api/about', {
+      const response = await fetch(getApiUrl('/api/about'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ const About = () => {
 
       const education = aboutData.education.filter((_: any, i: number) => i !== index);
 
-      const response = await fetch('http://localhost:5000/api/about', {
+      const response = await fetch(getApiUrl('/api/about'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -233,8 +234,8 @@ const About = () => {
                 placeholder="About Me Bio"
                 rows={6}
                 className="bg-card w-full resize-y min-h-[150px] max-h-[400px]"
-                style={{ 
-                  wordWrap: 'break-word', 
+                style={{
+                  wordWrap: 'break-word',
                   overflowWrap: 'break-word',
                   wordBreak: 'break-word',
                   whiteSpace: 'normal',
@@ -255,8 +256,8 @@ const About = () => {
               </div>
             </div>
           ) : (
-            <article className="prose prose-lg dark:prose-invert mx-auto w-full text-center" style={{ 
-              wordWrap: 'break-word', 
+            <article className="prose prose-lg dark:prose-invert mx-auto w-full text-center" style={{
+              wordWrap: 'break-word',
               overflowWrap: 'break-word',
               wordBreak: 'break-word',
               whiteSpace: 'normal',
@@ -292,9 +293,9 @@ const About = () => {
         >
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-2xl font-bold text-foreground flex items-center gap-3">
-            <GraduationCap className="h-6 w-6 text-accent" />
-            Education
-          </h3>
+              <GraduationCap className="h-6 w-6 text-accent" />
+              Education
+            </h3>
             {isAdmin && (
               <Button
                 variant="outline"
@@ -407,8 +408,8 @@ const About = () => {
                   </div>
                 ) : (
                   <>
-                <h4 className="text-lg font-semibold text-foreground">{edu.degree}</h4>
-                <p className="text-accent font-medium">{edu.school}</p>
+                    <h4 className="text-lg font-semibold text-foreground">{edu.degree}</h4>
+                    <p className="text-accent font-medium">{edu.school}</p>
                     <p className="text-sm text-muted-foreground mt-2">{edu.period}</p>
                   </>
                 )}

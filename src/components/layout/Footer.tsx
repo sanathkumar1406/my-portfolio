@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/context/AdminContext";
 import FooterLinksModal from "@/components/admin/FooterLinksModal";
 import { toast } from "sonner";
+import { getApiUrl } from "@/config/api";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -24,7 +25,7 @@ const Footer = () => {
   const fetchFooterLinks = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/site-settings');
+      const response = await fetch(getApiUrl('/api/site-settings'));
       if (response.ok) {
         const data = await response.json();
         if (data.settings?.footerLinks) {
