@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { getApiUrl } from '@/config/api';
 
 const LoginModal = () => {
     const { isLoginModalOpen, closeLoginModal, login } = useAdmin();
@@ -19,7 +20,7 @@ const LoginModal = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/admin/login', {
+            const response = await fetch(getApiUrl('/api/admin/login'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password }),
@@ -42,32 +43,32 @@ const LoginModal = () => {
 
     return (
         <Dialog open={isLoginModalOpen} onOpenChange={closeLoginModal}>
-                <DialogContent className="sm:max-w-[425px] z-[9999]">
-                    <DialogHeader>
-                        <DialogTitle>Admin Access</DialogTitle>
-                        <DialogDescription>
-                            Enter your password to enable edit mode.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter admin password"
-                            />
-                        </div>
-                        {error && <p className="text-sm text-destructive">{error}</p>}
-                        <DialogFooter>
-                            <Button type="submit" disabled={loading}>
-                                {loading ? 'Verifying...' : 'Login'}
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </DialogContent>
+            <DialogContent className="sm:max-w-[425px] z-[9999]">
+                <DialogHeader>
+                    <DialogTitle>Admin Access</DialogTitle>
+                    <DialogDescription>
+                        Enter your password to enable edit mode.
+                    </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="password">Password</Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter admin password"
+                        />
+                    </div>
+                    {error && <p className="text-sm text-destructive">{error}</p>}
+                    <DialogFooter>
+                        <Button type="submit" disabled={loading}>
+                            {loading ? 'Verifying...' : 'Login'}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
         </Dialog>
     );
 };

@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { getApiUrl } from '@/config/api';
 
 interface ProfileModalProps {
   open: boolean;
@@ -76,7 +77,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile, onS
 
       if (profile) {
         // Update existing profile
-        const response = await fetch(`http://localhost:5000/api/profiles/${profile.id}`, {
+        const response = await fetch(getApiUrl(`/api/profiles/${profile.id}`), {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +94,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile, onS
         savedProfile = data?.profile || data;
       } else {
         // Create new profile
-        const response = await fetch('http://localhost:5000/api/profiles', {
+        const response = await fetch(getApiUrl('/api/profiles'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

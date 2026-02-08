@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Upload, X } from 'lucide-react';
+import { getApiUrl, getAssetUrl } from '@/config/api';
 
 interface ProjectModalProps {
   open: boolean;
@@ -90,7 +91,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose, project, onS
 
       if (project) {
         // Update existing project
-        const response = await fetch(`http://localhost:5000/api/projects/${project.id}`, {
+        const response = await fetch(getApiUrl(`/api/projects/${project.id}`), {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -112,7 +113,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose, project, onS
         savedProject = data?.project || data;
       } else {
         // Create new project
-        const response = await fetch('http://localhost:5000/api/projects', {
+        const response = await fetch(getApiUrl('/api/projects'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -137,7 +138,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose, project, onS
 
       // Delete image if marked for removal
       if (shouldRemoveImage && savedProject.imageUrl) {
-        const deleteResponse = await fetch(`http://localhost:5000/api/projects/${savedProject.id}/image`, {
+        const deleteResponse = await fetch(getApiUrl(`/api/projects/${savedProject.id}/image`), {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -155,7 +156,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose, project, onS
       if (imageFile && !shouldRemoveImage) {
         const imgForm = new FormData();
         imgForm.append('image', imageFile);
-        const imageResponse = await fetch(`http://localhost:5000/api/projects/${savedProject.id}/image`, {
+        const imageResponse = await fetch(getApiUrl(`/api/projects/${savedProject.id}/image`), {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -278,7 +279,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose, project, onS
             {!imagePreview && currentImageUrl && !shouldRemoveImage && (
               <div className="space-y-2">
                 <div className="text-sm text-muted-foreground">
-                  Current image: <a href={`http://localhost:5000${currentImageUrl}`} target="_blank" rel="noopener noreferrer" className="underline">View</a>
+                  Current image: <a href={getAssetUrl(currentImageUrl)} target="_blank" rel="noopener noreferrer" className="underline">View</a>
                 </div>
                 <Button
                   type="button"

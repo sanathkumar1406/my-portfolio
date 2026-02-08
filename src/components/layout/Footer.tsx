@@ -52,7 +52,7 @@ const Footer = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/site-settings', {
+      const response = await fetch(getApiUrl('/api/site-settings'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
