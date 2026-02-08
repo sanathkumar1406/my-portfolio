@@ -1,0 +1,26 @@
+{
+    "name": "server",
+    "version": "1.0.0",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js",
+        "seed": "node seed.js",
+        "seed-all": "node seed-all.js"
+    },
+    "dependencies": {
+        "bcryptjs": "^3.0.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.6.1",
+        "express": "^4.19.2",
+        "jsonwebtoken": "^9.0.3",
+        "mongoose": "^8.21.0",
+        "multer": "^2.0.2",
+        "nodemailer": "^6.10.1",
+        "pdfjs-dist": "^5.4.624"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.0"
+    }
+}
